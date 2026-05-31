@@ -1,6 +1,6 @@
-# Parking Advisor
+# Japan Parking Advisor
 
-A parking decision assistant for driving in Japan. Give it a destination; it searches the live web, filters by **your** car, and returns a top pick plus 2-3 parallel nearby alternatives — each with a Google Maps link.
+A parking decision assistant for driving **in Japan** — region-specific by design, not a universal solution. Give it a destination; it searches the live web, filters by **your** car, and returns a top pick plus 2-3 parallel nearby alternatives — each with a Google Maps link.
 
 > 🌏 中文: [README.zh.md](README.zh.md) ・ 日本語: [README.ja.md](README.ja.md)
 
@@ -11,7 +11,7 @@ Google Maps shows you parking lots. It doesn't tell you:
 - **Which is actually cheapest for *my* stay?** Hourly vs daily-max vs merchant discounts.
 - **What do I do when I get there and it's full?** — the #1 real failure. That's why this tool always gives **parallel alternatives**, not one answer.
 
-Scope: **optimized for Japan** (sources, search queries, and examples are Japanese). The data/filter/honesty mechanics generalize, but coverage outside Japan is best-effort.
+Scope: **Japan-specific** (sources, search queries, lot types like 自走式/機械式, and discount conventions are all Japanese). Parking is a strongly regional problem — this is not a one-size-fits-the-world tool. The underlying mechanics could be re-pointed at another country, but as shipped it assumes Japan; elsewhere is unsupported.
 
 ## Two layers — which to use
 
