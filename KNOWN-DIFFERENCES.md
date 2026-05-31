@@ -4,15 +4,15 @@ This tool does **not** promise that ChatGPT, Claude, and Gemini behave identical
 
 | LLM | Web search by default? | Link format observed | Honors "ask for car height first"? | Notes / quirks |
 |---|---|---|---|---|
-| **Claude** | Yes, when web search is enabled in the client | plain Google Maps search / coordinate links | (filled from smoke test below) | (filled from smoke test below) |
+| **Claude** | Yes, when web search is enabled in the client | plain Google Maps search / coordinate links | **Yes** — stopped and asked for car height when none was given | Correctly excluded a too-tall car from all lots, flagged a conditional-entry lot, and emitted the downgrade notice (behavioral test 2026-05-31) |
 | **ChatGPT** | Yes (built-in browsing in recent versions) | _(to be filled — needs a real web-UI paste-test)_ | _(to be filled)_ | _(to be filled)_ |
 | **Gemini** | Yes (built-in search) | _(to be filled — needs a real web-UI paste-test)_ | _(to be filled)_ | _(to be filled)_ |
 
 ## Smoke-test log
 
-- **Claude** — (to be recorded from the L2 smoke test; see the repo build notes / PLAN Task 13)
-- **ChatGPT** — pending a real web-UI paste-test
-- **Gemini** — pending a real web-UI paste-test
+- **Claude** (2026-05-31) — ran PROMPT.md against 3 candidate lots under 3 car scenarios. Passed all: no-car → asked for height first; 2.3m car → excluded all 3 lots, no false top pick; 1.65m SUV → correct fit / conditional / excluded split; downgrade notice present. (Filter logic verified against the demo dataset, not a live web search.)
+- **ChatGPT** — pending a real web-UI paste-test (one of the two ship gates)
+- **Gemini** — pending a real web-UI paste-test (one of the two ship gates)
 
 ## What to watch for when you test a new engine
 
