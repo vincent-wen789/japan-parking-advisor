@@ -1,0 +1,76 @@
+# Parking Data — demo dataset (schema + worked examples)
+
+> This is a **demo dataset, not a live cache.** It shows the data-layer schema and a few fully-worked lots so you can see the shape of a record. **Everywhere else = live search** (see `../SKILL.md` search flow + `search-sources.md`); records you scrape get written in the shape below.
+>
+> **How to edit**: each lot is one `###` block — change a line, don't touch SKILL.md logic. Rates/discounts change maybe twice a year; low-frequency maintenance.
+> **Maintenance**: each lot carries `confirmed-date` + `source` (official-page URL, for re-checking). Re-verify every 6–12 months; the output always carries a "data as of" note to make staleness explicit.
+> **"unconfirmed"**: a field that wasn't on the fetched page — not invented. Tell the user that field is unconfirmed; don't fill in a value for it.
+> **No hardcoded car**: the fit verdict is NOT a stored field — it's computed by the filter layer at runtime from the lot's height/width limit vs the user's car. The `# fit example` lines below are illustrative only (showing how the filter would treat a typical ~1.65m SUV), not data.
+
+## Data-layer schema (fill new records like this during live search; pick a profile by scenario)
+
+**City paid profile** (most city-center / mall lots):
+area · facility · type (self-park / mechanical) · hourly rate · daily max (or "none") · merchant discount · height & width limit · Google Maps · confirmed-date · source · confidence
+
+**Suburban free profile** (sightseeing / suburb / roadside station):
+free? · time limit (e.g. 2h free / cap) · type (flat / roadside-station / convenience-store) · RV-OK · restroom? · location · Google Maps · confirmed-date · source · confidence
+
+**confidence convention**: confidence = **source authority × freshness** — don't default to high.
+> - Source: confirmed entirely by an **official page** = high; **third-party aggregator only** (Times / NAVITIME / parking aggregators) = medium; any second-hand / inferred field → **that field** drops to low (official source doesn't publish height/width yet you inferred "fits" → must label unconfirmed + "conditional," never high).
+> - Freshness: `confirmed-date` > 6 months → drop one tier even for an official source; output prompts a re-check / treat as cache miss.
+
+## Worked examples — the full safety spectrum (yes / conditional / no)
+
+The three lots below deliberately span the safety filter's three outcomes, so the demo teaches the **insight** (height/width is the killer feature vs Google Maps), not just the field names.
+
+---
+
+### 横浜ベイクォーター駐車場  — outcome: YES (clean self-park)
+- area: Yokohama Station east side (Kinkocho, NE of the station)
+- facility: 横浜ベイクォーター (commercial complex, underground self-park, 730 cars)
+- type: self-park
+- hourly rate: all-day 30 min ¥340 (incl. tax); 24:00–08:00 overnight ¥3,400
+- daily max: none (Yokohama City parking guide states "no max")
+- merchant discount: ベイクォーター ≥¥3,000 (1 store) = 1h free (each additional ¥3,000 = +1h voucher).
+- height & width limit: 高さ2.20m / 幅1.95m / 長さ5.30m / 重量2.30t (3-number / RV / 1-box OK; in-lot bump)
+- Google Maps: https://maps.google.com/maps?q=35.466435,139.626680
+- confirmed-date: 2026-05-30
+- source: https://yokohama-parking-guidesystem.jp/result/1/10
+- confidence: high (official guide system)
+- note: self-park, no mechanical risk; the most reliable east-side choice. Open 8:00–23:00 (exit by 24:00).
+- # fit example: a ~1.65m SUV (1.85m wide) → **yes** — self-park, 2.20m clearance and 1.95m width both clear with margin; RV explicitly OK.
+- # link caveat: the Maps link above is a bare-coordinate query (legacy). Per `search-sources.md`, the engine must rebuild this as a CID place-card link before presenting — do not output a raw coordinate link.
+
+---
+
+### そごうパーキング館  — outcome: CONDITIONAL (self-park floor OK, mechanical floor won't fit)
+- area: Yokohama Station east side
+- facility: そごう横浜店 (own multi-storey lot, 560 cars, largest in the Yokohama-station area)
+- type: self-park (flat zone) + mechanical (tower zone)
+- hourly rate: 30 min ¥340 (incl. tax)
+- daily max: none (no daily-cap line on the official site; long stays accrue indefinitely)
+- merchant discount: そごう purchase ≥¥3,000 incl. tax = 1.5h free (gift cards ≥¥5,000). Note: ベイクォーター spend can NOT be applied here (official).
+- height & width limit: flat zone 2m10cm / **tower zone 1m50cm** (some sections 1m55/1m75/2m; "limit varies by parking position")
+- Google Maps: https://maps.app.goo.gl/PzQkaroot5PbU4PQ7
+- confirmed-date: 2026-05-30
+- source: https://www.sogo-seibu.jp/yokohama/access
+- confidence: high (official access page)
+- note: **the killer-feature case** — height varies by where you're parked. On arrival you MUST insist on the flat zone.
+- # fit example: a ~1.65m SUV → **conditional** — the flat zone (2.10m) is fine, but if you're routed into the tower/mechanical zone (1.50m) the car **physically cannot enter.** Google Maps will not tell you this; the skill must. Never make a conditional lot the top pick without the warning.
+
+---
+
+### タイムズ新宿サンエービル  — outcome: NO (mechanical, hard height reject for an SUV)
+- area: Shinjuku Station west side (Nishi-Shinjuku 1-22, very close to the west exit)
+- facility: 新宿サンエービル attached coin parking (31 cars)
+- type: mechanical (tower, attendant-guided)
+- hourly rate: 20 min ¥200 (all day)
+- daily max: 12h after entry max ¥1,500 (weekday/holiday same; repeats)
+- merchant discount: partner-store / member discounts [specific stores unconfirmed]. The ¥1,500/12h cap is already cheap; good for long stays.
+- height & width limit: 全高1.5m / 全幅1.85m / 全長5.05m / 重量1.6t (entry/exit 07:30–21:00)
+- Google Maps: https://www.google.com/maps/search/?api=1&query=タイムズ新宿サンエービル
+- confirmed-date: 2026-05-30
+- source: https://times-info.net/P13-tokyo/C104/park-detail-BUK0037632/
+- confidence: medium (aggregator detail page)
+- note: cheap, but an SUV has no chance — a textbook Shinjuku mechanical lot that excludes mid-size SUVs. Mechanical, 07:30–21:00 only (no overnight exit).
+- # fit example: a ~1.65m SUV → **no** — mechanical full-height 1.5m < 1.65m, hard reject (1.85m width is also already at the edge). The filter drops this lot; it must never appear as a top pick for a tall car.
