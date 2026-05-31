@@ -2,17 +2,19 @@
 
 This tool does **not** promise that ChatGPT, Claude, and Gemini behave identically on the L2 prompt. They differ in whether web search is on by default, how they format links, and how reliably they honor the "ask for the car first" and "downgrade notice" instructions. This table tracks observed differences — it's a living document, not a guarantee.
 
-| LLM | Web search by default? | Link format observed | Honors "ask for car height first"? | Notes / quirks |
-|---|---|---|---|---|
-| **Claude** | Yes, when web search is enabled in the client | plain Google Maps search / coordinate links | **Yes** — stopped and asked for car height when none was given | Correctly excluded a too-tall car from all lots, flagged a conditional-entry lot, and emitted the downgrade notice (behavioral test 2026-05-31) |
-| **ChatGPT** | Yes (built-in browsing in recent versions) | _(to be filled — needs a real web-UI paste-test)_ | _(to be filled)_ | _(to be filled)_ |
-| **Gemini** | Yes (built-in search) | _(to be filled — needs a real web-UI paste-test)_ | _(to be filled)_ | _(to be filled)_ |
+| LLM (version tested) | Live web search | Resolves a Maps share/short link? | Link format returned | Downgrade notice shown? | Car handling |
+|---|---|---|---|---|---|
+| **ChatGPT** (5.5 Thinking) | Yes — cited 食べログ / 三井のリパーク / Times | **Yes** — resolved `maps.app.goo.gl/...` straight to the venue | resolved "Google Maps" place hyperlinks | Yes (in 中文) | **One-shot**: did *not* pause to ask; assumed a wide SUV (Harrier ~1.66m / 1.855m) and flagged the width as tight. Conservative assumption → safe direction. |
+| **Gemini** (2.5 Pro) | Yes | **No** — couldn't open the short link; needed the place name + address | `?api=1&query=<address>` (lands near the lot, not a verified card) | Yes — printed the "DOWNGRADE NOTICE" label verbatim (in 中文) | Used the car the user supplied; flagged the width as tight. |
+| **Claude** | Yes, when enabled in the client | not tested live (filter logic verified offline) | plain Google Maps links | Yes (offline test) | Behavioral test: no car → asked for height; a 2.3m car was excluded from all lots; a conditional-entry lot was flagged. |
 
 ## Smoke-test log
 
-- **Claude** (2026-05-31) — ran PROMPT.md against 3 candidate lots under 3 car scenarios. Passed all: no-car → asked for height first; 2.3m car → excluded all 3 lots, no false top pick; 1.65m SUV → correct fit / conditional / excluded split; downgrade notice present. (Filter logic verified against the demo dataset, not a live web search.)
-- **ChatGPT** — pending a real web-UI paste-test (one of the two ship gates)
-- **Gemini** — pending a real web-UI paste-test (one of the two ship gates)
+- **ChatGPT 5.5 Thinking** (2026-05-31, real web-UI paste-test) — destination given as a `maps.app.goo.gl` short link (中山菜館, 横浜市神奈川区松本町). Resolved the link itself, searched the web (三井のリパーク / Times / 食べログ cited), returned **4 parallel candidates** each with rate + capacity + height & width, flagged the Harrier's width tight (only ~4.5cm to the 1.9m limit), noted these are 自走式/平地 not 1.55m mechanical, showed the downgrade notice, answered in Chinese with JP lot names intact. **PASS.** Quirk: went one-shot without asking for the car (assumed a Harrier) → prompt updated to "assume a large SUV + flag, never assume small."
+- **Gemini 2.5 Pro** (2026-05-31, real web-UI paste-test) — **could not open the Maps short link**; resolved once given the place name + address. Then returned 3 parallel candidates, flagged width tight, excluded the mechanical option, printed the "DOWNGRADE NOTICE" verbatim, answered in Chinese. **PASS.** Quirk: no short-link redirect support → prompt updated with a "can't resolve the link? ask for name + address" fallback.
+- **Claude** (2026-05-31, offline behavioral test) — ran PROMPT.md against 3 candidate lots under 3 car scenarios. Passed all: no-car → asked for height; 2.3m car → excluded all 3 lots, no false top pick; 1.65m SUV → correct fit / conditional / excluded split; downgrade notice present. (Filter logic verified against the demo dataset, not a live web search.)
+
+> **Takeaway (2026-05-31):** the prompt is **effective across all three with no per-provider forking** — only two small, universal robustness tweaks were needed (assume-safe-large car fallback; Maps-short-link → name+address fallback), now baked into all language versions.
 
 ## What to watch for when you test a new engine
 

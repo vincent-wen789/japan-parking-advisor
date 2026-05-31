@@ -6,7 +6,7 @@
 
 1. **Live-search requirement** — parking needs current data; an engine with no web search must say so and stop (L1: search flow is live-first; L2: "REQUIREMENT… if you cannot search the web, say so and stop").
 
-2. **Car is mandatory + safety-critical** — never silently assume a default car. If height/width is unknown, ask before proceeding. Height vs the lot's height limit is the safety-critical check. (Presets offered for speed, not as a silent default.)
+2. **Car is safety-critical** — prefer to ask for height/width. If proceeding without it, assume a larger SUV (~1.65m H / 1.85m W), state the assumption, and invite a correction; **NEVER silently assume a small/low car** (the only dangerous direction — it green-lights a lot a taller car can't enter). Height vs the lot's height limit is the safety-critical check. Also: if a Maps share/short link can't be resolved, ask for name + address rather than guessing.
 
 3. **Three-layer model** — data layer (car-independent per-lot record) / filter layer (per-car: drop "no", flag "tight", promote "conditional entry") / present layer (rank + output).
 
@@ -33,3 +33,5 @@
 ## Cross-check (run after editing any engine rule)
 
 Walk invariants 1–10 and confirm each appears in BOTH `SKILL.md` and `prompt/PROMPT.md` (and that the zh/ja prompts mirror PROMPT.md). Last cross-check: **2026-05-31 — all 10 present in both; intentional differences as documented above. No drift.**
+
+Update **2026-05-31 (post 御三家 paste-test)**: invariant #2 changed from "always stop & ask" to "assume-safe-large fallback" + added the Maps-short-link fallback — mirrored across `SKILL.md` and all three `PROMPT*.md`. Reason: ChatGPT skipped the hard "stop & ask" and assumed a car; the assume-safe-large rule keeps it one-shot AND safe (never under-warns on height). Re-checked both files: no drift.
