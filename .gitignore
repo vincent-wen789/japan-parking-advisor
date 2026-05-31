@@ -2,3 +2,6 @@
 *.log
 node_modules/
 .env
+
+# claude-mem tooling stub (do not ship)
+AGENTS.md
