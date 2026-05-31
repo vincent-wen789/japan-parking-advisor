@@ -21,7 +21,7 @@ A web-search API the skill calls to find nearby parking. **Recommended: [Exa](ht
 ### 2. Headless browser (required only for WYSIWYG CID links)
 A headless-browser CLI/tool that can: **open a URL → wait → read the current URL → dump the page DOM/markdown.** A Playwright- or Puppeteer-based tool works; so does Claude Code's built-in browse tool.
 - This is what builds the CID place-card link and runs the ~150m same-name-lot disambiguation (see `references/search-sources.md`).
-- **Without it:** the skill degrades to plain Google Maps links + a downgrade notice (it does not silently ship unverified links). See `../SKILL.md` → "Graceful degrade."
+- **Without it:** the skill degrades to plain Google Maps links + a downgrade notice (it does not silently ship unverified links). See `SKILL.md` → "Graceful degrade."
 - (A bundled reference headless script is **not** shipped in this version — if there's demand, it's a planned follow-up. For now, wire your agent's own browser tool.)
 
 ### 3. Web-page fetcher (required) — read official / aggregator pages

@@ -20,7 +20,7 @@ A fixed, familiar area is basically a one-time calculation — the answer doesn'
 ## Three-layer model (the v2 foundation)
 Separate "data" from "personalization" — this solves "everyone's car is different":
 - **Data layer**: one car-independent record per lot (location / type self-park or mechanical / height & width limit / hourly rate / daily max / merchant discount / free? / Maps / confirmed-date / source / confidence). This is the genuinely expensive asset — collect once, reuse for all cars.
-- **Filter layer (thin)**: compare the car's height & width against each record — drop "no", flag "tight", promote "conditional entry" (mechanical-lot trap where only the self-park floor fits).
+- **Filter layer (thin)**: compare the car's height & width (and length/weight for mechanical lots — they gate on those too, and clearance can vary by floor) against each record — drop "no", flag "tight", promote "conditional entry" (mechanical-lot trap where only the self-park floor fits).
 - **Present layer**: rank + output (see below).
 
 ## Search flow

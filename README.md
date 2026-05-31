@@ -8,19 +8,21 @@ A parking decision assistant for driving **in Japan** — region-specific by des
 
 Google Maps shows you parking lots. It doesn't tell you:
 - **Can my car physically get in?** Height limits and mechanical-lot traps (a tower lot capped at 1.5m rejects most SUVs; some lots only fit you on the self-park floor).
-- **Which is actually cheapest for *my* stay?** Hourly vs daily-max vs merchant discounts.
-- **What do I do when I get there and it's full?** — the #1 real failure. That's why this tool always gives **parallel alternatives**, not one answer.
+- **Which is cheaper for *my* stay?** It surfaces the cost drivers — hourly vs daily-max vs merchant discounts — to compare on; it does *not* compute a guaranteed net-cheapest price (discounts vary by receipt/store/day, and getting that math confidently wrong is worse than not doing it).
+- **What do I do when I get there and it's full?** — the #1 real failure. That's why this tool always gives **parallel alternatives**, not one answer. (It does not check live vacancy — alternatives are route options, not availability guarantees.)
 
 Scope: **Japan-specific** (sources, search queries, lot types like 自走式/機械式, and discount conventions are all Japanese). Parking is a strongly regional problem — this is not a one-size-fits-the-world tool. The underlying mechanics could be re-pointed at another country, but as shipped it assumes Japan; elsewhere is unsupported.
 
 ## Two layers — which to use
 
+**Quick rule: not technical / just want an answer → L2. You run an AI agent (Claude Code etc.) and want verified, click-straight-to-the-lot links → L1.**
+
 | Layer | What it is | Link quality | Needs | Use when |
 |---|---|---|---|---|
-| **L1 — skill** (`skill/`) | A full agent skill | **WYSIWYG place-card links** *(only with a headless-browser stack)*; degrades gracefully + says so otherwise | a web-search API + a headless browser (see `skill/SETUP.md`); built for Claude-Code-style agents | you run an agent and want the best, pre-verified links |
-| **L2 — prompt** (`prompt/`) | A copy-paste prompt | plain Maps links — **cannot verify the link points at the right lot** (same-name-chain / rental disambiguation is L1-only) | any LLM with live web search | you just want a quick answer, zero setup |
+| **L1 — skill** (`skill/`) | A full agent skill | **verified direct-to-lot links** (click → that exact lot's place card) — *only if you have a headless-browser stack*; otherwise it degrades to plain links and says so | a web-search API + a headless browser (see `skill/SETUP.md`); built for Claude-Code-style agents | you run an agent and want the best, pre-verified links |
+| **L2 — prompt** (`prompt/`) | A copy-paste prompt | plain Maps links — **cannot verify the link points at the right lot** (same-name-chain / rental disambiguation is L1-only, so you open each and confirm before driving) | any LLM with live web search | you just want a quick answer, zero setup |
 
-**Most people who aren't running an agent want L2.** It does the same search + car-filter + honest reasoning; you just open each link and confirm it's the right lot before driving.
+**Most people who aren't running an agent want L2.** It does the same search + car-filter + honest reasoning — the tradeoff is you self-verify each link (open it, confirm it's the right lot) before you drive.
 
 ### The design (one engine, two shells)
 L1 and L2 share one engine — the same data/filter/present model, the same honesty rules, the same ranking. Only the runtime differs (an agent with a browser → full; a chat LLM → downgraded). The shared rules both layers must satisfy are written down in [`skill/ENGINE-INVARIANTS.md`](skill/ENGINE-INVARIANTS.md).
