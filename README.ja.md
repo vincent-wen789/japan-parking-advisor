@@ -29,7 +29,7 @@ L1とL2は1つのエンジンを共有します——同じデータ/フィル�
 
 **L1（スキル）**：`skill/` ディレクトリをエージェントのスキルフォルダにコピーし、[`skill/SETUP.md`](skill/SETUP.md) に従って3つの依存（検索API / headlessブラウザ / フェッチャー）を設定。headlessブラウザが無くても動きます——リンクが通常のMaps + 注記にダウングレードされるだけです。
 
-**L2（プロンプト）**：[`prompt/PROMPT.ja.md`](prompt/PROMPT.ja.md)（または [`.md` 英語](prompt/PROMPT.md) / [`.zh` 中国語](prompt/PROMPT.zh.md)）を開き、区切り線より下をすべてコピーして、ライブWeb検索ができるLLMに貼り付け、行き先と車の高さを伝えてください。
+**L2（プロンプト）**：[`prompt/PROMPT.ja.md`](prompt/PROMPT.ja.md)（または [`.md` 英語](prompt/PROMPT.md) / [`.zh` 中国語](prompt/PROMPT.zh.md)）を開き、区切り線より下をすべてコピーして、ライブWeb検索ができるLLMに貼り付け、行き先と車種を伝えてください。
 
 ## データの誠実さの扱い
 

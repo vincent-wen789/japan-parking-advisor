@@ -29,7 +29,7 @@ L1 和 L2 共用一套引擎——同样的数据/过滤/呈现模型、同样�
 
 **L1（skill）**：把 `skill/` 目录拷进你 agent 的 skills 文件夹，然后按 [`skill/SETUP.md`](skill/SETUP.md) 配三个依赖（搜索 API / headless 浏览器 / 抓取器）。没有 headless 浏览器它也能跑——链接降级成普通 Maps + 一句提示。
 
-**L2（prompt）**：打开 [`prompt/PROMPT.zh.md`](prompt/PROMPT.zh.md)（或 [`.md` 英文](prompt/PROMPT.md) / [`.ja` 日文](prompt/PROMPT.ja.md)），复制分割线以下的全部，粘进任何带联网搜索的 LLM，然后告诉它你要去哪、你的车高多少。
+**L2（prompt）**：打开 [`prompt/PROMPT.zh.md`](prompt/PROMPT.zh.md)（或 [`.md` 英文](prompt/PROMPT.md) / [`.ja` 日文](prompt/PROMPT.ja.md)），复制分割线以下的全部，粘进任何带联网搜索的 LLM，然后告诉它你要去哪、开什么车。
 
 ## 数据诚实怎么处理
 

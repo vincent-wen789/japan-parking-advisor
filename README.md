@@ -29,7 +29,7 @@ L1 and L2 share one engine — the same data/filter/present model, the same hone
 
 **L1 (skill):** copy the `skill/` directory into your agent's skills folder, then follow [`skill/SETUP.md`](skill/SETUP.md) for the three dependencies (search API / headless browser / fetcher). Without a headless browser it still runs — links just degrade to plain Maps + a notice.
 
-**L2 (prompt):** open [`prompt/PROMPT.md`](prompt/PROMPT.md) (or [`.zh`](prompt/PROMPT.zh.md) / [`.ja`](prompt/PROMPT.ja.md)), copy everything below the line, paste it into any LLM with web search, then tell it where you're driving and your car's height.
+**L2 (prompt):** open [`prompt/PROMPT.md`](prompt/PROMPT.md) (or [`.zh`](prompt/PROMPT.zh.md) / [`.ja`](prompt/PROMPT.ja.md)), copy everything below the line, paste it into any LLM with web search, then tell it where you're driving and what car you drive.
 
 ## How it handles data honesty
 
