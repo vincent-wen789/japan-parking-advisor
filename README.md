@@ -1,10 +1,14 @@
 # Japan Parking Advisor
 
-A parking decision assistant for driving **in Japan** — region-specific by design, not a universal solution. Give it a destination; it searches the live web, filters by **your** car, and returns a top pick plus 2-3 parallel nearby alternatives — each with a Google Maps link.
+**Parking in Japan has three traps Google Maps never mentions: a height bar your car can't clear, a price that triples if you guess wrong, and a "full" sign you only see after you've driven there.**
+
+Apps like NAVITIME and the タイムズ apps will help — if you pay the subscription, and if you're willing to read a list and do the filtering yourself. This gives you the **decision** instead: where to park, filtered for *your* car, costed for *this* trip, with the "can it even get in?" check done first — running inside the ChatGPT / Claude / Gemini you already use. **Nearly free.**
 
 > 🌏 中文: [README.zh.md](README.zh.md) ・ 日本語: [README.ja.md](README.ja.md)
 
 ## Why it exists
+
+You're in an unfamiliar Japanese city. Google Maps says you've arrived — but where do you actually park? The cheap coin lot turns out to be a 1.55m mechanical tower your car can't clear. The one you pick has no daily cap and bills you ¥4,000 for three hours. And the good lot? You find out it's full only after you've driven there.
 
 Google Maps shows you parking lots. It doesn't tell you:
 - **Can my car physically get in?** Height limits and mechanical-lot traps (a tower lot capped at 1.5m rejects most SUVs; some lots only fit you on the self-park floor).
@@ -12,6 +16,17 @@ Google Maps shows you parking lots. It doesn't tell you:
 - **What do I do when I get there and it's full?** — the #1 real failure. That's why this tool always gives **parallel alternatives**, not one answer. (It does not check live vacancy — alternatives are route options, not availability guarantees.)
 
 Scope: **Japan-specific** (sources, search queries, lot types like 自走式/機械式, and discount conventions are all Japanese). Parking is a strongly regional problem — this is not a one-size-fits-the-world tool. The underlying mechanics could be re-pointed at another country, but as shipped it assumes Japan; elsewhere is unsupported.
+
+## Not another parking app
+
+| | NAVITIME / タイムズ-style apps | Japan Parking Advisor |
+|---|---|---|
+| What you get | a searchable database — you filter it | a decision — filtered for your car, costed for your trip |
+| Can your car get in? | you check each lot's height yourself | filtered out up front; an unpublished height is flagged, not guessed |
+| What it costs you | subscription / premium tier | runs in the AI you already pay for — ~free |
+| When it's full | — | parallel backups, so you don't circle the block |
+
+And it tells you **when it doesn't know** — an unconfirmed height limit is flagged, never guessed — the opposite of an AI that answers confidently and wrong.
 
 ## Two layers — which to use
 
