@@ -6,7 +6,7 @@
 
 1. **Live-search requirement** — parking needs current data; an engine with no web search must say so and stop (L1: search flow is live-first; L2: "REQUIREMENT… if you cannot search the web, say so and stop").
 
-2. **Car is safety-critical** — prefer to ask for height/width. If proceeding without it, assume a larger SUV (~1.65m H / 1.85m W), state the assumption, and invite a correction; **NEVER silently assume a small/low car** (the only dangerous direction — it green-lights a lot a taller car can't enter). Height vs the lot's height limit is the safety-critical check. Also: if a Maps share/short link can't be resolved, ask for name + address rather than guessing.
+2. **Car is safety-critical — ask first.** Before recommending, ask what car the user drives (make/model) if not given; **don't proceed without it, don't assume a default.** Derive height/width from the model (ask for the height if the model's dimensions are unclear). Height vs the lot's height limit is the safety-critical check. Also: if a Maps share/short link can't be resolved, ask for name + address rather than guessing.
 
 3. **Three-layer model** — data layer (car-independent per-lot record) / filter layer (per-car: drop "no", flag "tight", promote "conditional entry") / present layer (rank + output).
 
@@ -34,4 +34,4 @@
 
 Walk invariants 1–10 and confirm each appears in BOTH `SKILL.md` and `prompt/PROMPT.md` (and that the zh/ja prompts mirror PROMPT.md). Last cross-check: **2026-05-31 — all 10 present in both; intentional differences as documented above. No drift.**
 
-Update **2026-05-31 (post 御三家 paste-test)**: invariant #2 changed from "always stop & ask" to "assume-safe-large fallback" + added the Maps-short-link fallback — mirrored across `SKILL.md` and all three `PROMPT*.md`. Reason: ChatGPT skipped the hard "stop & ask" and assumed a car; the assume-safe-large rule keeps it one-shot AND safe (never under-warns on height). Re-checked both files: no drift.
+Update **2026-05-31 (post 御三家 paste-test + Vincent correction)**: kept **force-ask-first** (the original safety path) but changed *what* gets asked — ask for the **car make/model**, then derive height/width from it (a user rarely knows their car's mm offhand, but knows the model). Added the Maps-short-link → name+address fallback. Mirrored across `SKILL.md` and all three `PROMPT*.md`. (An interim "assume-safe-large" idea was reverted — the 御三家 test did include a car-model confirm step, so force-ask is the correct path.) Re-checked: no drift.
