@@ -44,6 +44,12 @@ Coordinates themselves (CID doesn't need them, but ranking / walking distance / 
 
 Cost: 1–2 headless passes per candidate (single hit = 1; disambiguation = +1). Acceptable for low-frequency use, in exchange for "click → it's the place card."
 
+#### Exception — roadside time-limited zones (パーキングメーター / チケット)
+A roadside 時間制限駐車区間 is **a stretch of street, not a single lot — it has no place card / CID**, so the CID build flow above does **not** apply.
+- **User link = a navigable Google area-search:** `https://www.google.com/maps/search/パーキングメーター/@<destination lat>,<lng>,17z` — opens to the meter pins near the destination, which the user can navigate to. If Google has no meter POI in that area, fall back to a Google Maps link for the representative 区間 / intersection (use the street / chōme you got from the police page).
+- **The police / public-safety 設置場所 page is engine-internal only** (to find *which street* has a legal zone) — **never hand it to the user as their link**: it's a table, not navigable. In the copy, state "this is a roadside zone, not a single lot."
+- **Google keyword noise (always include the de-noise tip):** a `パーキングメーター` area search mixes in POIs **named** "パーキングメーター" that are actually **in-building coin lots** (address carries a "○○ビル N階" floor). **The map pin is reliable** (a red 「パーキングチケット発給機／メーター」 is the real roadside machine); the **list header is noisy.** So the output copy must carry: "read the チケット発給機／メーター pin on the map; list entries with a floor address are in-building coin lots, not roadside — don't pick those." (Note: many areas' on-street is **チケット発給機** (ticket-issue), not coin meters — the `パーキングメーター` keyword fuzzy-matches them, no separate search needed.)
+
 ### Degradation chain when you can't find candidates (don't give up at the first wall)
 The core move in an unfamiliar area is "discover 2-3 nearby candidate names + locations first, then scrape each one's attributes." If the first channel (search API) isn't configured / reachable, **don't quit** — walk this chain:
 1. **Search API** (preferred discovery channel; e.g. Exa).
@@ -67,6 +73,7 @@ The core move in an unfamiliar area is "discover 2-3 nearby candidate names + lo
 - **Sightseeing**: Google Maps + mapion + **local tourism-association** pages + **roadside stations (道の駅)** (often free / large). Prioritize surfacing a free / cheap large lot.
 - **Hospital**: in-hospital / partner-lot official pages (discount rules are special, usually keyed to a treatment receipt; don't apply mall discount logic).
 - **Suburban free**: Google Maps "<area> 無料駐車場" + **roadside stations** + municipality + convenience-store flat lots. Fill the **suburban free profile** (free? / time limit / RV-OK / restroom).
+- **Roadside short-stay** (パーキングメーター / チケット — **only when the user signals a short stop**, "just a quick stop" / "in and out" / explicitly ≤60 min; otherwise skip it): source = the **prefectural police / public-safety-commission "パーキング・メーター等 設置場所" official page** (e.g. each 県警 has a same-named page) → get 設置区間 + time limit + type. Add a Google Maps `パーキングメーター <place>` search for a representative point. Fill the **roadside time-limited profile** (see `parking-data.md`). Present it on its **own line, never mixed into the garage ranking** (see the WYSIWYG roadside exception above for the link + de-noise tip). **RED LINE: only legal 計費 zones inside an official 設置区間; never recommend unmarked roadside (= violation / tow). The time limit is a legal cap (over-time = 取締, not pay-more) — say so. Short stays only.**
 
 NAVITIME parking search (free tier) suits any scenario for pulling nearby candidates + a rate overview; use it as a medium-confidence cross-source.
 
