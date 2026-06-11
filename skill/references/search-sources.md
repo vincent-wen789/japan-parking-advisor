@@ -16,7 +16,7 @@
 Before discovery, fix the "destination anchor `{name, coords, precision}`". By input type:
 
 - **Google Maps link / short-link** ⭐ (most precise — the user hand-picked the point):
-  1. Short-link (`maps.app.goo.gl/...`, `goo.gl/maps/...`) → follow the redirect for the real URL: `curl -sIL "<short>" | grep -i '^location:'` for the final `Location:`, or fetch the short link with a fetcher that follows redirects.
+  1. Short-link (`maps.app.goo.gl/...`, `goo.gl/maps/...`) → follow the redirect for the real URL: `curl -sIL "<short>" | grep -i '^location:'` for the final `Location:`, or fetch the short link with a fetcher that follows redirects. **Don't point a content-extraction tool ("web extract" / article-scraper APIs) at a Maps short link — they fail on it (observed: "Failed to fetch").** All you need is the redirect's `Location:` header, not page content.
   2. Pull coords from the real URL: `@35.12,139.45,17z` / `?q=lat,lng` / `!3dLAT!4dLNG` / `/place/<name>/@lat,lng`. **coords + place name = anchor (precision = precise).**
   3. Can't pull coords → open the URL in a headless browser and read the page (markdown/DOM) for place name + coords. (If your browser's plain text dump is unreliable, use the markdown/DOM dump.)
 - **Address / postal code** → use directly as a precise anchor; for coords, search the address via the search API.
@@ -27,10 +27,11 @@ Before discovery, fix the "destination anchor `{name, coords, precision}`". By i
 > Once you have the anchor, discovery is "find parking near this anchor."
 
 ## WYSIWYG links: each candidate must open to its place card (not a bare coordinate / chain list)
-A hard requirement: when the user clicks a candidate's link, Google must show **that lot's place card** — otherwise they second-guess it. Two failure modes (both observed) + the fix:
-- ❌ `?api=1&query=<lat>,<lng>` → lands on a "35°28'34″N 139°37′…E" **bare-coordinate card** — no name, user has no footing.
-- ❌ `?api=1&query=<lot name>` → a same-name chain returns a **list** (e.g. Mitsui at 1-chome / 2-chome / Miyagawa-cho all at once; the user has to pick).
-- ✅ Google Place **CID link** `https://maps.google.com/?cid=<CID>` → opens straight to that place's card.
+A hard requirement: when the user clicks a candidate's link, Google must show **that lot's place card** — otherwise they second-guess it. Link forms, ranked (gold standard → acceptable fallback → forbidden):
+- ✅ Google Place **CID link** `https://maps.google.com/?cid=<CID>` → opens straight to that place's card. **When you can build a CID, you must use it.**
+- ❌ `?api=1&query=<lat>,<lng>` → lands on a "35°28'34″N 139°37′…E" **bare-coordinate card** — no name, user has no footing. Never acceptable.
+- ❌ `?api=1&query=<lot name>` (**when the CID build flow is available**) → a same-name chain returns a **list** (e.g. Mitsui at 1-chome / 2-chome / Miyagawa-cho all at once; the user has to pick). Don't use it when a CID is buildable. When it is NOT buildable, it becomes a legitimate fallback — see "No-browser link fallback" below.
+- 🚫 **A fabricated `?cid=` number is the WORST form — absolutely forbidden.** An LLM-invented CID opens someone else's lot or a 404, and the user will navigate to the wrong place trusting it. That is strictly worse than any honest search link. **A CID has exactly two legitimate origins: the shipped demo rows in `parking-data.md` · this run's build-flow verification (below).** Have neither → use the fallback forms; never hand-roll the number.
 
 Build flow (headless browser; verified pattern):
 1. **Search the lot**: open `https://www.google.com/maps/search/<URL-encoded full lot name>` → wait → read the current URL.
@@ -43,6 +44,20 @@ Build flow (headless browser; verified pattern):
 Coordinates themselves (CID doesn't need them, but ranking / walking distance / the 150m check do): geocode the address — in Japan, the GSI geocoder is precise + free: `https://msearch.gsi.go.jp/address-search/AddressSearch?q=<address>` → GeoJSON `coordinates=[lng,lat]`. (If your environment blocks `curl`, use a small Python `urllib` snippet instead.)
 
 Cost: 1–2 headless passes per candidate (single hit = 1; disambiguation = +1). Acceptable for low-frequency use, in exchange for "click → it's the place card."
+
+### No-browser link fallback (headless browser unavailable / build flow fails mid-run)
+A CID can only come from the build flow above — **no browser = no new CIDs.** (Plain HTTP fetch of Google Maps returns a JS shell with no ftid in it — verified, don't bother trying.) For live-searched candidates, build the **user link** from these forms instead, in priority order:
+1. **Destination coordinates available** (short-link expansion / GSI geocoding) → `https://www.google.com/maps/search/<URL-encoded lot name>/@<destination lat>,<lng>,17z` — viewport-anchored: the map opens pinned to the destination area and the lot's pin is right there (same link form as the roadside exception below; one rule, two uses).
+2. **No coordinates** → `https://www.google.com/maps/search/?api=1&query=<URL-encoded lot name>` — when the name is unique, Google redirects straight to the place card (verified: 江の島なぎさ駐車場 → lands on the card); a chain / ambiguous name lands on a search list (verified: Mitsui + chōme → list). When it may land on a list, add one line to the copy: "open it and pick the 〔lot name〕 pin."
+3. Always use the lot's **original full name from the source page** — don't abbreviate, don't translate, don't append 駐車場 yourself (Google's listing name doesn't always carry it; adding it can break the unique match).
+
+Felt quality, ranked: CID card ＞ api=1 unique-hit card ＞ viewport-anchored pin ＞ search list (all acceptable down to here) ≫ 🚫 fabricated CID (forbidden, see above).
+
+**Pre-send link self-check (mechanical, always the last step):** every user link must match one of the three legal forms —
+- `maps.google.com/?cid=<number>` where the number **appears verbatim in the shipped demo rows or this run's build-flow output** (a number you assembled yourself does not count)
+- `google.com/maps/search/?api=1&query=...`
+- `google.com/maps/search/<name or パーキングメーター>/@<lat>,<lng>,17z`
+A link matching none of these → rewrite it into a fallback form before sending.
 
 #### Exception — roadside time-limited zones (パーキングメーター / チケット)
 A roadside 時間制限駐車区間 is **a stretch of street, not a single lot — it has no place card / CID**, so the CID build flow above does **not** apply.

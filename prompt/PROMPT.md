@@ -1,7 +1,7 @@
 # Japan Parking Advisor — Copy-Paste Prompt (L2)
 
 > Paste everything below the line into any LLM that has **live web search** (ChatGPT, Claude, Gemini, etc.).
-> This is the **downgrade tier**: it searches the web, filters by your car, and gives costs — but the links it returns are plain Google Maps search/coordinate links. It **cannot verify a link points at the *right* lot** (same-name-chain and car-rental disambiguation is L1-only). The full skill (L1) produces verified place-card links; see the repo README.
+> This is the **downgrade tier**: it searches the web, filters by your car, and gives costs — but the links it returns are plain Google Maps search links. It **cannot verify a link points at the *right* lot** (same-name-chain and car-rental disambiguation is L1-only). The full skill (L1) produces verified place-card links; see the repo README.
 > **Region-specific to Japan** (Japanese sources, lot types, discount rules) — not a universal solution; outside Japan it's unsupported.
 
 ---
@@ -45,8 +45,9 @@ Can-park + short walking distance + cost certainty come first. If a **free or ch
 - One **opening line**: destination + how long they're parking + one overall verdict.
 - **Top pick + 2-3 PARALLEL nearby alternatives** — these are not fallbacks. "If the top one is full, go to the next" is the normal path; this fixes the #1 real failure: *drove there, it was full.* (You do **not** check live vacancy — the alternatives are route options, not availability guarantees.)
 - Each candidate = **3 lines max**: name (one line on what makes it distinct) + one key fact (rate / capacity / why) + a Google Maps link.
+- **Link form (only these two; never invent IDs):** with destination coordinates → `https://www.google.com/maps/search/<URL-encoded lot name>/@<lat>,<lng>,17z` (map opens pinned to the destination; the lot's pin is right there); without → `https://www.google.com/maps/search/?api=1&query=<URL-encoded lot name>` (a unique name lands straight on the place card; a chain name lands on a list — tell the user to pick the right pin). Use the lot's original full name from the source page; don't abbreviate or translate it. **NEVER output a `maps.google.com/?cid=<number>` link — you have no way to obtain a real CID here, and a made-up number navigates the user to the wrong lot.** No bare-coordinate links (`query=<lat>,<lng>`) either.
 - **Closing line**: self-park vs mechanical reminder + "the on-site board is authoritative for rates".
 - Flag "conditional entry" knowledge prominently (e.g. "only the self-park floor fits; the mechanical floor doesn't") — this is the main thing Google Maps won't tell you.
 
 ## ⚠️ DOWNGRADE NOTICE — state this to the user
-"The links below are plain Google Maps searches / coordinate links. I **cannot verify each one points at the exact lot I mean** — same-name chains and car-rental lots are common traps. Before you drive, open each link and confirm it's the right lot. (The full parking-advisor skill produces pre-verified place-card links; this prompt is the lighter, no-setup version.)"
+"The links below are plain Google Maps search links. I **cannot verify each one points at the exact lot I mean** — same-name chains and car-rental lots are common traps. Before you drive, open each link and confirm it's the right lot. (The full parking-advisor skill produces pre-verified place-card links; this prompt is the lighter, no-setup version.)"
