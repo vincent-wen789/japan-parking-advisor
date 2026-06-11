@@ -5,7 +5,7 @@
 - **L1 (this skill)** needs the dependencies below to produce its best output: **WYSIWYG place-card links** (click → the lot's Google card, with same-name-chain / car-rental traps filtered out). It's built **for browse-capable agents** (Claude Code and similar) — i.e. an agent that can run a headless browser and read pages back.
 - **No setup / not an agent?** Use the **L2 prompt** in `../prompt/` instead — paste it into any LLM with web search. You get the same search + car-filter + honest reasoning, just plain Maps links (no place-card verification). Most people who aren't running an agent want L2.
 
-If you install L1 but **lack a headless browser**, L1 still works — it just **degrades the link step** to plain Maps links and says so in its output (it won't pretend the links are verified). At that point L2 is the simpler choice.
+If you install L1 but **lack a headless browser**, L1 still works — it just **degrades the link step** to honest Maps search links (viewport-anchored / `api=1` query — see `references/search-sources.md` "No-browser link fallback"; it never invents CID numbers) and says so in its output (it won't pretend the links are verified). At that point L2 is the simpler choice.
 
 ## The three dependencies
 
