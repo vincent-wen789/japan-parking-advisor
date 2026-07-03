@@ -19,6 +19,26 @@ Apps like NAVITIME and the タイムズ apps will help — if you pay for their 
 
 (There's also a full agent skill for people who run AI agents — it adds pre-verified place-card links on top of the same engine. That's the `skill/` directory, explained under "Two layers" below. If "AI agent" means nothing to you, the copy-paste prompt above is the whole product.)
 
+## What an answer looks like
+
+Built from the repo's own verified demo data (Yokohama, confirmed 2026-05) — same shape in your language, whichever layer you run:
+
+> **You:** Driving to そごう横浜店 tomorrow, shopping ~3 hours. Car: Honda Freed.
+>
+> **AI:** Near Yokohama Station east side, parked ~3h, your Freed (≈1.71m tall — worth confirming on the 車検証 if a lot is borderline): both picks below clear it, but watch the そごう tower zone.
+>
+> **横浜ベイクォーター駐車場** (top pick) — self-park, 730 cars, ¥340/30min; a ¥3,000 store receipt = 1h free. 2.20m clearance, plenty of room.
+> https://maps.google.com/?cid=13690509701379998062
+>
+> **そごうパーキング館** (right at the store) — ¥340/30min, そごう receipt ≥¥3,000 = 1.5h free. **Conditional: the flat zone (2.10m) fits; the tower zone is capped at 1.50m and your car won't go in — ask for the flat zone at the gate (the phrase to say or show: 「平面でお願いします」 = "flat zone, please").**
+> https://maps.google.com/?cid=7086177179481059382
+>
+> *(…plus 1–2 more parallel backups in a real answer — if the top pick turns out full, you just drive to the next one; that's the designed path, not a failure.)*
+>
+> Both self-park; rates from official pages — the on-site board is authoritative.
+
+That そごう line is the whole point: Google Maps shows both lots, but not that one of them only fits your car on certain floors.
+
 ## Why it exists
 
 You're in an unfamiliar Japanese city. Google Maps says you've arrived — but where do you actually park? The cheap coin lot turns out to be a 1.55m mechanical tower your car can't clear. The one you pick has no daily cap and bills you ¥4,000 for three hours. And the good lot? You find out it's full only after you've driven there.
@@ -42,26 +62,6 @@ Scope: **Japan-specific** (sources, search queries, lot types like 自走式 sel
 And it tells you **when it doesn't know** — an unconfirmed height limit is flagged, never guessed — the opposite of an AI that answers confidently and wrong.
 
 **"Can't I just ask ChatGPT raw?"** You can — and it will skip the height check unless you think to ask, hand you one answer with no backups, and happily produce a link that opens the wrong same-name lot. This prompt exists to force the checks raw prompting skips: car first, unknown heights flagged, parallel alternatives, links it isn't allowed to fabricate.
-
-## What an answer looks like
-
-Built from the repo's own verified demo data (Yokohama, confirmed 2026-05) — same shape in your language, whichever layer you run:
-
-> **You:** Driving to そごう横浜店 tomorrow, shopping ~3 hours. Car: Honda Freed.
->
-> **AI:** Near Yokohama Station east side, parked ~3h, your Freed (≈1.71m tall — worth confirming on the 車検証 if a lot is borderline): both picks below clear it, but watch the そごう tower zone.
->
-> **横浜ベイクォーター駐車場** (top pick) — self-park, 730 cars, ¥340/30min; a ¥3,000 store receipt = 1h free. 2.20m clearance, plenty of room.
-> https://maps.google.com/?cid=13690509701379998062
->
-> **そごうパーキング館** (right at the store) — ¥340/30min, そごう receipt ≥¥3,000 = 1.5h free. **Conditional: the flat zone (2.10m) fits; the tower zone is capped at 1.50m and your car won't go in — ask for the flat zone at the gate (the phrase to say or show: 「平面でお願いします」 = "flat zone, please").**
-> https://maps.google.com/?cid=7086177179481059382
->
-> *(…plus 1–2 more parallel backups in a real answer — if the top pick turns out full, you just drive to the next one; that's the designed path, not a failure.)*
->
-> Both self-park; rates from official pages — the on-site board is authoritative.
-
-That そごう line is the whole point: Google Maps shows both lots, but not that one of them only fits your car on certain floors.
 
 ## Two layers — which to use
 

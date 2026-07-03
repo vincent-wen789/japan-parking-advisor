@@ -13,6 +13,8 @@ Driven by a 3-lens review (correctness / architecture / intent) + a 4-persona co
 - Roadside short-stay copy: "60-min legal cap" → "**the posted legal cap (usually 60 min)**" (some zones post 40 min).
 - Conditional-entry output now hands the user the exact on-site phrase (e.g. 「平面でお願いします」).
 - Docs: README rebuilt user-first (60-second quick start, sample answer built from the verified demo dataset, explicit free/cost line); "計費" terminology leak fixed (EN "metered zone" / JA 「時間制限駐車区間」); SETUP corrects the headless-browser requirement, adds known fragilities of the CID build flow and a per-query cost envelope; `parking-data.md` no longer lists `confidence` as a stored field (derived at read time).
+- **Sample answer moved above the fold** — it now sits right after the 60-second quick start (was buried below the comparison table), so a first-time visitor sees a real answer before deciding whether to read on.
+- **Hotel / overnight is now a recognized scenario** — no on-site lot assumed, plus three overnight-specific checks a day trip skips: can you exit at night (many 機械式 lots lock ~24:00–08:00), the 夜間最大 overnight flat rate, and multi-night re-entry / re-pay.
 
 ## 2026-06-11 — link honesty hardening
 
