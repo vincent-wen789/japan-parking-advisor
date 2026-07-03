@@ -39,6 +39,8 @@ Built from the repo's own verified demo data (Yokohama, confirmed 2026-05) — s
 
 That そごう line is the whole point: Google Maps shows both lots, but not that one of them only fits your car on certain floors.
 
+Staying overnight? Tell it your hotel — it handles overnight parking too, including multi-night stays and the traps a day trip misses (lots that lock you in until morning, an overnight flat-rate instead of the daytime meter).
+
 ## Why it exists
 
 You're in an unfamiliar Japanese city. Google Maps says you've arrived — but where do you actually park? The cheap coin lot turns out to be a 1.55m mechanical tower your car can't clear. The one you pick has no daily cap and bills you ¥4,000 for three hours. And the good lot? You find out it's full only after you've driven there.
