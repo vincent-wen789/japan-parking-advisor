@@ -19,10 +19,11 @@ A web-search API the skill calls to find nearby parking. **Recommended: [Exa](ht
   - `"<area> 無料駐車場"`  (free parking in an area)
 
 ### 2. Headless browser (required only for WYSIWYG CID links)
-A headless-browser CLI/tool that can: **open a URL → wait → read the current URL → dump the page DOM/markdown.** A Playwright- or Puppeteer-based tool works; so does Claude Code's built-in browse tool.
+A headless-browser CLI/tool that can: **open a URL → wait → read the current URL → dump the page DOM/markdown.** A Playwright- or Puppeteer-based tool works; so does a browser MCP your agent already has. (It must run the page's JavaScript and report the *current* URL — the Maps place URL is produced client-side, so a plain HTTP fetcher never sees it, even one that follows redirects.)
 - This is what builds the CID place-card link and runs the ~150m same-name-lot disambiguation (see `references/search-sources.md`).
 - **Without it:** the skill degrades to plain Google Maps links + a downgrade notice (it does not silently ship unverified links). See `SKILL.md` → "Graceful degrade."
 - (A bundled reference headless script is **not** shipped in this version — if there's demand, it's a planned follow-up. For now, wire your agent's own browser tool.)
+- **Known fragilities (read before relying on the CID step):** the build flow scrapes an un-contracted Google URL shape. It can break when Google changes the URL format, serves a consent page, or rate-limits automated visits. The designed failure mode is loud, not wrong: mid-run breakage degrades to the fallback link forms + the downgrade notice — it never fabricates a CID (see `references/search-sources.md`).
 
 ### 3. Web-page fetcher (required) — read official / aggregator pages
 Anything that fetches a URL's content: `curl`, or your agent's fetch tool. Used to read official facility access pages, Times / NAVITIME detail pages, and municipal parking-guide systems for rates and height limits.
@@ -34,3 +35,7 @@ Anything that fetches a URL's content: `curl`, or your agent's fetch tool. Used 
 3. **Fetcher**: fetch any official parking page (e.g. a Times detail page) → you should get its HTML/text with the rate and height fields.
 
 If #2 fails or you skip it, L1 runs in degraded-link mode — that's expected, not an error.
+
+## Cost envelope per query (so "free" stays a checkable claim)
+
+Typically **~2–5 search-API calls + 3–6 page fetches**, plus **1–2 headless passes per candidate** when building CID links (see `references/search-sources.md` "Cost"). The spend is your own agent's API/token usage — the skill itself has no service fee.
